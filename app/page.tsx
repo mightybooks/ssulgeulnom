@@ -65,7 +65,7 @@ const RESULTS: Record<
     solution:
       "전개는 창의력이 아니라 순서의 문제입니다. 8칸의 흐름이 중간이 어디로 가야 하는지 알려줍니다.",
     shareMsg:
-      "나 전개 붕괴형 나왔는데\n너는 어디서 멈추냐 🌀",
+      "나 또 전개 붕괴형 나왔는데\n너는 어디서 멈추냐 🌀",
   },
   end_collapse: {
     label: "후반 붕괴형",
@@ -143,7 +143,7 @@ export default function SsulGeulNomPage() {
   async function handleShare() {
     if (!resultType) return;
     const result = RESULTS[resultType];
-    const text = `${result.shareMsg}\n\n써, 글놈 진단기로 확인해봐`;
+    const text = `${result.shareMsg}\n\n써, 글놈 진단기 해봐`;
     const url = typeof window !== "undefined" ? window.location.href : "";
 
     if (navigator.share) {
@@ -165,7 +165,7 @@ export default function SsulGeulNomPage() {
   }
 
   function handleCTA() {
-    window.open("https://smartstore.naver.com", "_blank");
+    window.open("https://smartstore.naver.com/shop15th/products/8091029469", "_blank");
   }
 
   function restart() {
@@ -705,12 +705,16 @@ export default function SsulGeulNomPage() {
                 {/* ── 공유 ── */}
                 <div className="share-section">
                   <p className="share-label">친구한테 떠넘기기</p>
+
+                  {/* 공유 버튼 */}
                   <button className="btn-share" onClick={handleShare}>
                     친구한테 떠넘기기 ↗
                   </button>
+
+                  {/* 링크 복사 버튼 */}
                   <button
                     className={`btn-copy ${copyDone ? "done" : ""}`}
-                    onClick={handleShare}
+                    onClick={() => fallbackCopy(window.location.href)}
                   >
                     {copyDone ? "✓ 링크 복사됨" : "링크 복사"}
                   </button>
@@ -720,6 +724,8 @@ export default function SsulGeulNomPage() {
                 <div className="cta-section">
                   <p className="cta-warning">
                     이 상태로는 계속 여기서 멈춥니다.
+                    <br />
+                    구조 없이 쓰고 있기 때문입니다.
                   </p>
                   <button className="btn-cta" onClick={handleCTA}>
                     8단계로 나눠서 바로 써보기 →
