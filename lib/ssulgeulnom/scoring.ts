@@ -8,6 +8,14 @@ const RESULT_ORDER: ResultType[] = [
   "no_finish",
 ];
 
+const TIE_BREAK_PRIORITY: ResultType[] = [
+  "no_finish",
+  "mid_collapse",
+  "end_collapse",
+  "burst_early",
+  "start_block",
+];
+
 export function createInitialScores(): Record<ResultType, number> {
   return {
     start_block: 0,
@@ -20,20 +28,21 @@ export function createInitialScores(): Record<ResultType, number> {
 
 export function calcResult(
   scores: Record<ResultType, number>,
-  answers: Answer[]
+  _answers: Answer[]
 ): ResultType {
-  const maxVal = Math.max(...RESULT_ORDER.map((type) => scores[type]));
+  const values = RESULT_ORDER.map((type) => scores[type]);
+  const maxVal = Math.max(...values);
   const candidates = RESULT_ORDER.filter((type) => scores[type] === maxVal);
 
   if (candidates.length === 1) {
     return candidates[0];
   }
 
-  const pattern =
-    answers.length > 0 ? answers : RESULT_ORDER.map((type) => scores[type]);
-  const stableIndex = pattern.reduce((hash, value, index) => {
-    return (hash * 31 + (index + 1) * (value + 3)) % 1000003;
-  }, candidates.length * 17);
+  const allScoresEqual = values.every((value) => value === values[0]);
 
-  return candidates[stableIndex % candidates.length];
+  if (allScoresEqual) {
+    return "no_finish";
+  }
+
+  return TIE_BREAK_PRIORITY.find((type) => candidates.includes(type))!;
 }
