@@ -28,21 +28,41 @@ export function createInitialScores(): Record<ResultType, number> {
 
 export function calcResult(
   scores: Record<ResultType, number>,
-  _answers: Answer[]
+  answers: Answer[]
 ): ResultType {
-  const values = RESULT_ORDER.map((type) => scores[type]);
-  const maxVal = Math.max(...values);
-  const candidates = RESULT_ORDER.filter((type) => scores[type] === maxVal);
+  const entries = Object.entries(scores) as [ResultType, number][];
+  const values = entries.map(([, value]) => value);
+  const maxValue = Math.max(...values);
+  const minValue = Math.min(...values);
+
+  if (maxValue === minValue) {
+    const totalAnswerValue = answers.reduce<number>(
+      (sum, value) => sum + value,
+      0
+    );
+
+    if (totalAnswerValue >= 8) {
+      return "no_finish";
+    }
+
+    if (totalAnswerValue <= 2) {
+      return "mid_collapse";
+    }
+
+    return "end_collapse";
+  }
+
+  const candidates = entries
+    .filter(([, value]) => value === maxValue)
+    .map(([type]) => type);
 
   if (candidates.length === 1) {
     return candidates[0];
   }
 
-  const allScoresEqual = values.every((value) => value === values[0]);
+  const fallback = TIE_BREAK_PRIORITY.find((type) =>
+    candidates.includes(type)
+  );
 
-  if (allScoresEqual) {
-    return "no_finish";
-  }
-
-  return TIE_BREAK_PRIORITY.find((type) => candidates.includes(type))!;
+  return fallback ?? candidates[0];
 }
