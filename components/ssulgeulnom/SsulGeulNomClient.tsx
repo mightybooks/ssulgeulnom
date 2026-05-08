@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DIAGNOSIS_URL, WORKSHOP_URL } from "@/constants/urls";
 import {
   ANSWER_OPTIONS,
@@ -25,6 +25,46 @@ function openDiagnosis() {
   window.open(DIAGNOSIS_URL, "_blank", "noopener,noreferrer");
 }
 
+function getTodayKey() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function getBaseDisplayCount(todayKey: string) {
+  const daySeed = todayKey
+    .split("-")
+    .join("")
+    .split("")
+    .reduce((sum, char) => sum + Number(char), 0);
+
+  return 80 + ((daySeed * 17) % 180);
+}
+
+function getDisplayCount() {
+  const todayKey = getTodayKey();
+  const storageKey = `ssulgeulnom-count-${todayKey}`;
+
+  try {
+    const saved = window.localStorage.getItem(storageKey);
+
+    if (saved) {
+      const next = Number(saved) + Math.floor(Math.random() * 3) + 1;
+      window.localStorage.setItem(storageKey, String(next));
+      return next;
+    }
+
+    const initial = getBaseDisplayCount(todayKey);
+    window.localStorage.setItem(storageKey, String(initial));
+    return initial;
+  } catch {
+    return getBaseDisplayCount(todayKey);
+  }
+}
+
 export default function SsulGeulNomClient() {
   const [step, setStep] = useState<Step>("start");
   const [qIndex, setQIndex] = useState(0);
@@ -35,8 +75,13 @@ export default function SsulGeulNomClient() {
   const [resultType, setResultType] = useState<ResultType | null>(null);
   const [copyDone, setCopyDone] = useState(false);
   const [animKey, setAnimKey] = useState(0);
+  const [displayCount, setDisplayCount] = useState<number | null>(null);
 
   const currentQ = QUESTIONS[qIndex];
+
+  useEffect(() => {
+    setDisplayCount(getDisplayCount());
+  }, []);
 
   function markCopied() {
     setCopyDone(true);
@@ -184,6 +229,23 @@ export default function SsulGeulNomClient() {
           margin-top: 16px;
           line-height: 1.6;
           font-weight: 300;
+        }
+
+        .count-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 6px 12px;
+          margin-top: 22px;
+          border: 1px solid rgba(232, 200, 74, 0.45);
+          color: var(--accent);
+          background: rgba(232, 200, 74, 0.08);
+          font-size: 12px;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+        }
+
+        .count-badge + .btn-primary {
+          margin-top: 16px;
         }
 
         .btn-primary {
@@ -541,6 +603,11 @@ export default function SsulGeulNomClient() {
                 <br />
                 5개의 질문, 1분이면 됩니다.
               </p>
+              {displayCount !== null && (
+                <p className="count-badge">
+                  오늘 {displayCount}번째 진단 대기 중
+                </p>
+              )}
               <button
                 className="btn-primary"
                 onClick={() => setStep("question")}
