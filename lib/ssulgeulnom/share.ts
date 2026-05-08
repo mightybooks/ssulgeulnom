@@ -73,12 +73,6 @@ export async function shareToKakao(
 ): Promise<ShareOutcome> {
   const kakaoJsKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
 
-  console.log("[Kakao Share] key exists:", Boolean(kakaoJsKey));
-  console.log(
-    "[Kakao Share] initialized before:",
-    window.Kakao?.isInitialized?.()
-  );
-
   if (!kakaoJsKey || !window.Kakao) {
     return shareResult(result, url);
   }
@@ -86,12 +80,6 @@ export async function shareToKakao(
   if (!window.Kakao.isInitialized()) {
     window.Kakao.init(kakaoJsKey);
   }
-
-  console.log("[Kakao Share] initialized after:", window.Kakao.isInitialized());
-  console.log(
-    "[Kakao Share] sendDefault:",
-    window.Kakao.Share?.sendDefault
-  );
 
   if (!window.Kakao.Share?.sendDefault) {
     return shareResult(result, url);

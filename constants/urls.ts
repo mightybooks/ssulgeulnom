@@ -11,7 +11,7 @@ export const SITE_DESCRIPTION =
   "글을 쓰다 마는 사람들을 위한 자가폭로형 글쓰기 진단 테스트.";
 export const OG_IMAGE_PATH = "/og/ssulgeulnom-og.png";
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://xn--hz2b41ezwf0zf9tq.com";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ssulgeulnom.vercel.app";
 
 export const RESULT_SHARE_IMAGES: Record<ResultType, string> = {
   start_block: "/og/results/start-block.png",
