@@ -9,11 +9,11 @@ const RESULT_ORDER: ResultType[] = [
 ];
 
 const TIE_BREAK_PRIORITY: ResultType[] = [
-  "no_finish",
   "mid_collapse",
   "end_collapse",
   "burst_early",
   "start_block",
+  "no_finish",
 ];
 
 export function createInitialScores(): Record<ResultType, number> {
@@ -60,9 +60,16 @@ export function calcResult(
     return candidates[0];
   }
 
-  const fallback = TIE_BREAK_PRIORITY.find((type) =>
-    candidates.includes(type)
+  const nonNoFinishCandidates = candidates.filter(
+    (type) => type !== "no_finish"
   );
 
-  return fallback ?? candidates[0];
+  const tieCandidates =
+    nonNoFinishCandidates.length > 0 ? nonNoFinishCandidates : candidates;
+
+  const fallback = TIE_BREAK_PRIORITY.find((type) =>
+    tieCandidates.includes(type)
+  );
+
+  return fallback ?? tieCandidates[0];
 }
