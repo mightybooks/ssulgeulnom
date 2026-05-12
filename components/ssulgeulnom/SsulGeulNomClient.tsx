@@ -231,6 +231,14 @@ export default function SsulGeulNomClient() {
           font-weight: 300;
         }
 
+        .seo-description {
+          font-size: 13px;
+          color: var(--ink-dim);
+          margin-top: 18px;
+          line-height: 1.7;
+          font-weight: 300;
+        }
+
         .count-badge {
           display: inline-flex;
           align-items: center;
@@ -602,6 +610,10 @@ export default function SsulGeulNomClient() {
                 왜 자꾸 거기서 멈추는지 확인해보세요.
                 <br />
                 5개의 질문, 1분이면 됩니다.
+              </p>
+              <p className="seo-description">
+                써, 글놈 진단기는 글을 쓰다 자꾸 멈추는 사람을 위한 글쓰기 중단 원인 테스트입니다.
+                5개의 질문을 통해 당신의 글쓰기 사망 지점이 첫 문장, 초반, 중간, 결말, 미완성 누적 중 어디에 가까운지 확인합니다.
               </p>
               {displayCount !== null && (
                 <p className="count-badge">
